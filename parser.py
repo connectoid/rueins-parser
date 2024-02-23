@@ -158,7 +158,7 @@ for brand in brands:
                 print(f'Файл {manual_link[0]} сохранен, размер: {filesize}')
                 xfields = create_xfields(category[0], brand[0])
                 # print(f'{manual_link[0]}, {manual_link[1]}, {manual_link[2]}, {xfields}, {filesize}')
-                if create_download(model[0], xfields, 6, manual_link[0], filesize, manual_link[3]):
+                if create_download(model[0], xfields, 6, file_name, filesize, thumb_name):
                     print('Запись успешно добавлена в БД')
             else:
                 print('Download error')
