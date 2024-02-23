@@ -63,7 +63,8 @@ def get_brands_list(url):
 def change_case(name, case):
     morph = pymorphy2.MorphAnalyzer()
     tmp_word = morph.parse(name)[0]
-    new_name = tmp_word.inflect({case}).word.upper()
+    cased = tmp_word.inflect({case})
+    new_name = cased.word
     return new_name
 
 def get_models_list(url):
