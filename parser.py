@@ -61,11 +61,16 @@ def get_brands_list(url):
     return brands_list
 
 
-def change_case(word, case):
-    morph = pymorphy2.MorphAnalyzer()
-    tmp_word = morph.parse(word)[0]
-    new_word = tmp_word.inflect({case})
-    return new_word.word
+def change_case(sentense, case):
+    words_list = sentense.split()
+    new_words_list = []
+    for word in words_list:
+        morph = pymorphy2.MorphAnalyzer()
+        tmp_word = morph.parse(word)[0]
+        new_word = tmp_word.inflect({case})
+        new_words_list.append(new_word)
+    new_sentense = ' '.join(new_words_list)
+    return new_sentense.upper()
 
 
 def get_models_list(url):
