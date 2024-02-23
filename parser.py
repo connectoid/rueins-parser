@@ -5,6 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 from PIL import Image
+import pymorphy2
 
 from database.orm import create_download
 
