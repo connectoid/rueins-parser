@@ -38,7 +38,7 @@ def get_categories_list(url):
     links = soup.find_all('a', class_='section-link')
     categories_links = [link['href'] for link in links]
     names = soup.find_all('span', class_='section-name')
-    cat_names = [name.text for name in names]
+    cat_names = [change_case(name.text, 'nomn') for name in names]
     categories_list = list(zip(cat_names, categories_links))
     return categories_list
 
@@ -79,7 +79,7 @@ def change_case(sentense, case):
             new_words_list.append(word)
     print('~~~~~~~~~~~', new_words_list)
     new_sentense = ' '.join(new_words_list)
-    return new_sentense.upper()
+    return new_sentense.capitalize()
 
 
 def get_models_list(url):
