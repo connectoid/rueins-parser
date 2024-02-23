@@ -174,6 +174,8 @@ for brand in brands:
         for model in models:
             manual_link = get_manual_link(model[1])
             file_name = manual_link[0].replace(' ', '-')
+            model_name = manual_link[0].split('.')[0]
+            full_model_name = f'{brand[0]} {model_name}'
             file_link = manual_link[1]
             thumb_name = manual_link[2]
             thumb_link = manual_link[3]
@@ -183,7 +185,7 @@ for brand in brands:
                 print(f'Файл {manual_link[0]} сохранен, размер: {filesize}')
                 xfields = create_xfields(category[0].replace(brand[0], '').capitalize(), brand[0])
                 # print(f'{manual_link[0]}, {manual_link[1]}, {manual_link[2]}, {xfields}, {filesize}')
-                if create_download(model[0], xfields, 6, file_name, filesize, thumb_name):
+                if create_download(full_model_name, xfields, 6, file_name, filesize, thumb_name):
                     print('Запись успешно добавлена в БД')
             else:
                 print('Download error')
