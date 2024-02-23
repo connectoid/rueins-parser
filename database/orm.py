@@ -23,7 +23,7 @@ def create_download(title, xfields, category_id, filename, filesize, thumbnale_f
     session = Session()
     download = session.query(Download).filter(Download.title == title).first()
     if download is None:
-        print(f'Инструкции {title} нет в базе, созадем новую')
+        # print(f'Инструкции {title} нет в базе, созадем новую')
         category_id = category_id
         new_download = Download(
             title=title,

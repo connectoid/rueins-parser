@@ -166,7 +166,10 @@ def create_xfields(cat_name='', brand_name='', lang='русском', format='pd
 
 all_brands = get_brands_list(base_url)
 brands = []
+brands.append(all_brands[1])
 brands.append(all_brands[2])
+brands.append(all_brands[3])
+count = 1
 for brand in brands:
     categories = get_categories_list(brand[1])
     for category in categories:
@@ -182,10 +185,11 @@ for brand in brands:
             filesize = download_file_from_url(file_link, file_name, downloads_dir)
             thumbsize = download_file_from_url(thumb_link, thumb_name, downloads_thumbs_dir, is_thumb=True)
             if filesize:
-                print(f'Файл {manual_link[0]} сохранен, размер: {filesize}')
+                # print(f'Файл {manual_link[0]} сохранен, размер: {filesize}')
                 xfields = create_xfields(category[0].replace(brand[0], '').capitalize(), brand[0])
                 # print(f'{manual_link[0]}, {manual_link[1]}, {manual_link[2]}, {xfields}, {filesize}')
                 if create_download(full_model_name, xfields, 6, file_name, filesize, thumb_name):
-                    print('Запись успешно добавлена в БД')
+                    print(f'{count}. Модель {full_model_name} успешно добавлена в БД')
+                    count += 1
             else:
                 print('Download error')
