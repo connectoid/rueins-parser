@@ -78,7 +78,8 @@ def get_models_list(url):
                 divs = soup.find_all('div', class_='entry-title')
                 spans = soup.find_all('span', {'itemprop': 'headline'})
                 for span in spans:
-                    model_titles.append(span.text)
+                    model_name = span.text.replace('Инструкция к ', '')
+                    model_titles.append(model_name)
                 for div in divs:
                     model_urls.append(div.find('a')['href'])
     else:
@@ -146,8 +147,12 @@ for brand in brands:
         models = get_models_list(category[1])
         for model in models:
             manual_link = get_manual_link(model[1])
-            filesize = download_file_from_url(manual_link[1], manual_link[0], downloads_dir)
-            thumbsize = download_file_from_url(manual_link[3], manual_link[2], downloads_thumbs_dir, is_thumb=True)
+            file_name = manual_link[0].replace(' ', '-')
+            file_link = manual_link[1]
+            thumb_name = manual_link[2]
+            thumb_link = manual_link[3]
+            filesize = download_file_from_url(file_link, file_name, downloads_dir)
+            thumbsize = download_file_from_url(thumb_link, thumb_name, downloads_thumbs_dir, is_thumb=True)
             if filesize:
                 print(f'Файл {manual_link[0]} сохранен, размер: {filesize}')
                 xfields = create_xfields(category[0], brand[0])
