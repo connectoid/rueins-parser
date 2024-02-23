@@ -86,7 +86,8 @@ def get_models_list(url):
         divs = soup.find_all('div', class_='entry-title')
         spans = soup.find_all('span', {'itemprop': 'headline'})
         for span in spans:
-            model_titles.append(span.text)
+            model_name = span.text.replace('Инструкция к ', '')
+            model_titles.append(model_name)
         for div in divs:
             model_urls.append(div.find('a')['href'])
     models_list = list(zip(model_titles, model_urls))
