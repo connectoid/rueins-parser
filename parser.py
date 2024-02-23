@@ -69,6 +69,7 @@ def change_case(sentense, case):
         tmp_word = morph.parse(word)[0]
         new_word = tmp_word.inflect({case})
         new_words_list.append(new_word)
+    print('~~~~~~~~~~~', new_words_list)
     new_sentense = ' '.join(new_words_list)
     return new_sentense.upper()
 
