@@ -68,7 +68,7 @@ def change_case(sentense, case):
         morph = pymorphy2.MorphAnalyzer()
         tmp_word = morph.parse(word)[0]
         new_word = tmp_word.inflect({case})
-        new_words_list.append(new_word)
+        new_words_list.append(new_word.word)
     print('~~~~~~~~~~~', new_words_list)
     new_sentense = ' '.join(new_words_list)
     return new_sentense.upper()
