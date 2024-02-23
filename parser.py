@@ -67,17 +67,14 @@ def change_case(sentense, case):
     for word in words_list:
         if isinstance(word, str):
             try:
-                print(word)
                 morph = pymorphy2.MorphAnalyzer()
                 tmp_word = morph.parse(word)[0]
                 new_word = tmp_word.inflect({case})
-                print(new_word)
                 new_words_list.append(new_word.word)
             except Exception as e:
                 new_words_list.append(word)
         else:
             new_words_list.append(word)
-    print('~~~~~~~~~~~', new_words_list)
     new_sentense = ' '.join(new_words_list)
     return new_sentense.capitalize()
 
@@ -169,7 +166,7 @@ def create_xfields(cat_name='', brand_name='', lang='русском', format='pd
 
 all_brands = get_brands_list(base_url)
 brands = []
-brands.append(all_brands[1])
+brands.append(all_brands[2])
 for brand in brands:
     categories = get_categories_list(brand[1])
     for category in categories:
