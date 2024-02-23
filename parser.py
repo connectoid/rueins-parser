@@ -38,7 +38,7 @@ def get_categories_list(url):
     links = soup.find_all('a', class_='section-link')
     categories_links = [link['href'] for link in links]
     names = soup.find_all('span', class_='section-name')
-    cat_names = [change_case(name.text, 'nomn') for name in names]
+    cat_names = [change_case(name.text, 'nomn').replace('Инструкция по эксплуатация ', '') for name in names]
     categories_list = list(zip(cat_names, categories_links))
     return categories_list
 
@@ -184,7 +184,7 @@ for brand in brands:
             thumbsize = download_file_from_url(thumb_link, thumb_name, downloads_thumbs_dir, is_thumb=True)
             if filesize:
                 print(f'Файл {manual_link[0]} сохранен, размер: {filesize}')
-                xfields = create_xfields(category[0], brand[0])
+                xfields = create_xfields(category[0].replace(brand[0], '').capitalize(), brand[0])
                 # print(f'{manual_link[0]}, {manual_link[1]}, {manual_link[2]}, {xfields}, {filesize}')
                 if create_download(model[0], xfields, 6, file_name, filesize, thumb_name):
                     print('Запись успешно добавлена в БД')
