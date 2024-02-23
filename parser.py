@@ -118,10 +118,10 @@ def get_manual_link(url):
 def download_file_from_url(url, file_name, dest_folder, is_thumb=False):
     response = requests.get(url=url, headers=headers)
     if response.status_code == 200:
-        file_name = f"{dest_folder}/{file_name}"
-        with open(file_name, mode="wb") as file:
+        file_path = f"{dest_folder}/{file_name}"
+        with open(file_path, mode="wb") as file:
             file.write(response.content)
-        filesize = os.path.getsize(file_name)
+        filesize = os.path.getsize(file_path)
         if is_thumb:
             dst = f"{dest_folder}/mini/{file_name}"
             shutil.copyfile(file_name, dst)
