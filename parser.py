@@ -4,6 +4,7 @@ import shutil
 import requests
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
+from PIL import Image
 
 from database.orm import create_download
 
@@ -58,6 +59,11 @@ def get_brands_list(url):
         brands_list.append(brand_list)
     return brands_list
 
+def change_case(name, case):
+    morph = pymorphy2.MorphAnalyzer()
+    tmp_word = morph.parse(name)[0]
+    new_name = tmp_word.inflect({case}).upper()
+    return new_name
 
 def get_models_list(url):
     model_urls = []
@@ -79,6 +85,7 @@ def get_models_list(url):
                 spans = soup.find_all('span', {'itemprop': 'headline'})
                 for span in spans:
                     model_name = span.text.replace('Инструкция к ', '')
+                    model_name = change_case(model_name, 'nomn')
                     model_titles.append(model_name)
                 for div in divs:
                     model_urls.append(div.find('a')['href'])
@@ -87,6 +94,7 @@ def get_models_list(url):
         spans = soup.find_all('span', {'itemprop': 'headline'})
         for span in spans:
             model_name = span.text.replace('Инструкция к ', '')
+            model_name = change_case(model_name, 'nomn')
             model_titles.append(model_name)
         for div in divs:
             model_urls.append(div.find('a')['href'])
@@ -127,6 +135,9 @@ def download_file_from_url(url, file_name, dest_folder, is_thumb=False):
         if is_thumb:
             dst = f"{dest_folder}/mini/{file_name}"
             shutil.copyfile(file_path, dst)
+            image = Image.open(dst)
+            image.thumbnail((200, 200))
+            image.save(dst)
         return filesize
     else:
         print(f'Ошибка сохранения файла {file_name}: {response.status_code}')
