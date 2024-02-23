@@ -124,7 +124,7 @@ def download_file_from_url(url, file_name, dest_folder, is_thumb=False):
         filesize = os.path.getsize(file_path)
         if is_thumb:
             dst = f"{dest_folder}/mini/{file_name}"
-            shutil.copyfile(file_name, dst)
+            shutil.copyfile(file_path, dst)
         return filesize
     else:
         print(f'Ошибка сохранения файла {file_name}: {response.status_code}')
