@@ -104,7 +104,8 @@ def get_manual_link(url):
 def download_file_from_url(url, file_name, dest_folder):
     response = requests.get(url=url, headers=headers)
     if response.status_code == 200:
-        with open(f"{dest_folder}/{file_name}", mode="wb") as file:
+        file_name = f"{dest_folder}/{file_name}"
+        with open(file_name, mode="wb") as file:
             file.write(response.content)
         filesize = os.path.getsize(file_name)
         return filesize
