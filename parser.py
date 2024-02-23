@@ -4,6 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 
+from database.orm import create_download
 
 base_url = 'https://rueins.ru/'
 
@@ -114,7 +115,14 @@ def download_file_from_url(url, file_name, dest_folder):
         return None
 
 
+def create_xfields(cat_name='', brand_name='', lang='русском', format='pdf'):
+    example = 'type|коммуникатор||develop|ACER||lang|русском||fformat|pdf||board|'
+    xfields = f'type|{cat_name}||develop|{brand_name}||lang|{lang}||fformat|{format}||board|'
+    return xfields
+
+
 brands = get_brands_list(base_url)
+brands = brands[0]
 for brand in brands:
     categories = get_categories_list(brand[1])
     for category in categories:
@@ -122,4 +130,8 @@ for brand in brands:
         for model in models:
             manual_link = get_manual_link(model[1])
             filesize = download_file_from_url(manual_link[1], manual_link[0], pdf_folder)
-            print(f'Файл {manual_link[0]} сохранен, размер: {filesize}')
+            if filesize:
+                print(f'Файл {manual_link[0]} сохранен, размер: {filesize}')
+                xfields = create_xfields(category[0], brand[0])
+                if create_download(model[0], xfields, 6, manual_link[0], filesize, ''):
+                    print('Запись успешно добавлена в БД')
