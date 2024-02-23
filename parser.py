@@ -66,12 +66,15 @@ def change_case(sentense, case):
     new_words_list = []
     for word in words_list:
         if isinstance(word, str):
-            print(word)
-            morph = pymorphy2.MorphAnalyzer()
-            tmp_word = morph.parse(word)[0]
-            new_word = tmp_word.inflect({case})
-            print(new_word)
-            new_words_list.append(new_word.word)
+            try:
+                print(word)
+                morph = pymorphy2.MorphAnalyzer()
+                tmp_word = morph.parse(word)[0]
+                new_word = tmp_word.inflect({case})
+                print(new_word)
+                new_words_list.append(new_word.word)
+            except Exception as e:
+                new_words_list.append(word)
         else:
             new_words_list.append(word)
     print('~~~~~~~~~~~', new_words_list)
