@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 from PIL import Image
 import pymorphy2
+from pypdf import PdfReader, PdfWriter
 
 from database.orm import create_download
 
@@ -145,6 +146,7 @@ def download_file_from_url(url, file_name, dest_folder, is_thumb=False):
         file_path = f"{dest_folder}/{file_name}"
         with open(file_path, mode="wb") as file:
             file.write(response.content)
+        compress_pdf(file_path)
         filesize = os.path.getsize(file_path)
         if is_thumb:
             dst = f"{dest_folder}/mini/{file_name}"
@@ -162,6 +164,21 @@ def create_xfields(cat_name='', brand_name='', lang='русском', format='pd
     example = 'type|коммуникатор||develop|ACER||lang|русском||fformat|pdf||board|'
     xfields = f'type|{cat_name}||develop|{brand_name}||lang|{lang}||fformat|{format}||board|'
     return xfields
+
+
+def compress_pdf(file_name):
+    reader = PdfReader(file_name)
+    writer = PdfWriter()
+
+    for page in reader.pages:
+        writer.add_page(page)
+
+    for page in writer.pages:
+        for img in page.images:
+            img.replace(img.image, quality=50)
+
+    with open(file_name, "wb") as f:
+        writer.write(f)
 
 
 all_brands = get_brands_list(base_url)
