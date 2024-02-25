@@ -190,13 +190,8 @@ manual_titles = [title.upper() for title in manual_titles]
 print('Stop requesting models list in database')
 all_brands = get_brands_list(base_url)
 print(f'All brands count: {len(all_brands)}')
-brands = []
-brands.append(all_brands[1])
-brands.append(all_brands[2])
-brands.append(all_brands[3])
-brands.append(all_brands[5])
 count = 1
-for brand in brands:
+for brand in all_brands:
     categories = get_categories_list(brand[1])
     for category in categories:
         models = get_models_list(category[1])
