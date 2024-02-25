@@ -215,4 +215,4 @@ for brand in brands:
                 else:
                     print('Download error')
             else:
-                pass
+                print('Model already exists. Passing')
