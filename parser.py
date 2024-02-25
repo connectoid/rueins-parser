@@ -208,7 +208,7 @@ for brand in brands:
             file_link = manual_link[1]
             thumb_name = manual_link[2]
             thumb_link = manual_link[3]
-            if model_name.upper() not in manual_titles:
+            if full_model_name.upper() not in manual_titles:
                 filesize = download_file_from_url(file_link, file_name, downloads_dir)
                 thumbsize = download_file_from_url(thumb_link, thumb_name, downloads_thumbs_dir, is_thumb=True)
                 if filesize:
