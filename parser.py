@@ -146,7 +146,7 @@ def download_file_from_url(url, file_name, dest_folder, is_thumb=False):
         file_path = f"{dest_folder}/{file_name}"
         with open(file_path, mode="wb") as file:
             file.write(response.content)
-        compress_pdf(file_path)
+        # compress_pdf(file_path)
         filesize = os.path.getsize(file_path)
         if is_thumb:
             dst = f"{dest_folder}/mini/{file_name}"
