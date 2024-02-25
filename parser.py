@@ -20,7 +20,7 @@ downloads_thumbs_dir = '/var/www/www-root/data/www/manualbase.ru/uploads/downloa
 # downloads_dir = 'pdf'
 # downloads_thumbs_dir = 'pdf/thumbs'
 
-
+MAX_FILE_SIZE = 8000000
 
 
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
@@ -148,6 +148,9 @@ def download_file_from_url(url, file_name, dest_folder, is_thumb=False):
             file.write(response.content)
         # compress_pdf(file_path)
         filesize = os.path.getsize(file_path)
+        if filesize > MAX_FILE_SIZE:
+            print(f'File size more than MAX_FILE_SIZE ({MAX_FILE_SIZE}). Skip')
+            return None
         if is_thumb:
             dst = f"{dest_folder}/mini/{file_name}"
             shutil.copyfile(file_path, dst)
@@ -188,9 +191,9 @@ print('Stop requesting models list in database')
 all_brands = get_brands_list(base_url)
 print(f'All brands count: {len(all_brands)}')
 brands = []
-# brands.append(all_brands[1])
-# brands.append(all_brands[2])
-# brands.append(all_brands[3])
+brands.append(all_brands[1])
+brands.append(all_brands[2])
+brands.append(all_brands[3])
 brands.append(all_brands[5])
 count = 1
 for brand in brands:
@@ -216,6 +219,6 @@ for brand in brands:
                         print(f'{count}. Модель {full_model_name} успешно добавлена в БД')
                         count += 1
                 else:
-                    print('Download error')
+                    print('Download error or file is too big')
             else:
-                print('Model already exists. Passing')
+                print(f'Model {model_name} already exists. Passing')
