@@ -183,9 +183,10 @@ def compress_pdf(file_name):
 
 all_brands = get_brands_list(base_url)
 brands = []
-brands.append(all_brands[1])
-brands.append(all_brands[2])
-brands.append(all_brands[3])
+# brands.append(all_brands[1])
+# brands.append(all_brands[2])
+# brands.append(all_brands[3])
+brands.append(all_brands[4])
 count = 1
 for brand in brands:
     categories = get_categories_list(brand[1])
