@@ -181,8 +181,10 @@ def compress_pdf(file_name):
         writer.write(f)
 
 
+print('Start requesting models list in database')
 manual_titles = get_manual_titles_from_donor()
 manual_titles = [title.upper() for title in manual_titles]
+print('Stop requesting models list in database')
 all_brands = get_brands_list(base_url)
 brands = []
 # brands.append(all_brands[1])
