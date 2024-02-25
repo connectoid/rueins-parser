@@ -8,7 +8,7 @@ from PIL import Image
 import pymorphy2
 from pypdf import PdfReader, PdfWriter
 
-from database.orm import create_download
+from database.orm import create_download, get_manual_titles_from_donor
 
 base_url = 'https://rueins.ru/'
 
@@ -181,6 +181,8 @@ def compress_pdf(file_name):
         writer.write(f)
 
 
+manual_titles = get_manual_titles_from_donor()
+manual_titles = [title.upper() for title in manual_titles]
 all_brands = get_brands_list(base_url)
 brands = []
 # brands.append(all_brands[1])
@@ -200,14 +202,17 @@ for brand in brands:
             file_link = manual_link[1]
             thumb_name = manual_link[2]
             thumb_link = manual_link[3]
-            filesize = download_file_from_url(file_link, file_name, downloads_dir)
-            thumbsize = download_file_from_url(thumb_link, thumb_name, downloads_thumbs_dir, is_thumb=True)
-            if filesize:
-                # print(f'Файл {manual_link[0]} сохранен, размер: {filesize}')
-                xfields = create_xfields(category[0].replace(brand[0], '').capitalize(), brand[0])
-                # print(f'{manual_link[0]}, {manual_link[1]}, {manual_link[2]}, {xfields}, {filesize}')
-                if create_download(full_model_name, xfields, 6, file_name, filesize, thumb_name):
-                    print(f'{count}. Модель {full_model_name} успешно добавлена в БД')
-                    count += 1
+            if model_name.upper() not in manual_titles:
+                filesize = download_file_from_url(file_link, file_name, downloads_dir)
+                thumbsize = download_file_from_url(thumb_link, thumb_name, downloads_thumbs_dir, is_thumb=True)
+                if filesize:
+                    # print(f'Файл {manual_link[0]} сохранен, размер: {filesize}')
+                    xfields = create_xfields(category[0].replace(brand[0], '').capitalize(), brand[0])
+                    # print(f'{manual_link[0]}, {manual_link[1]}, {manual_link[2]}, {xfields}, {filesize}')
+                    if create_download(full_model_name, xfields, 6, file_name, filesize, thumb_name):
+                        print(f'{count}. Модель {full_model_name} успешно добавлена в БД')
+                        count += 1
+                else:
+                    print('Download error')
             else:
-                print('Download error')
+                pass
