@@ -176,12 +176,15 @@ def create_xfields(cat_name='', brand_name='', lang='русском', format='pd
 
 
 def compress_pdf(file_name):
-    compressPdfDocument = ap.Document(file_name)
-    pdfoptimizeOptions = ap.optimization.OptimizationOptions()
-    pdfoptimizeOptions.image_compression_options.compress_images = True
-    pdfoptimizeOptions.image_compression_options.image_quality = 50
-    compressPdfDocument.optimize_resources(pdfoptimizeOptions)
-    compressPdfDocument.save(file_name)
+    reader = PdfReader(file_name)
+    writer = PdfWriter()
+    for page in reader.pages:
+        writer.add_page(page)
+    for page in writer.pages:
+        for img in page.images:
+            img.replace(img.image, quality=50)
+    with open(file_name, "wb") as f:
+        writer.write(f)
 
 
 
