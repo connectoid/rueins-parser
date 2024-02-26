@@ -15,6 +15,8 @@ from database.orm import create_download, get_manual_titles_from_donor
 
 base_url = 'https://rueins.ru/'
 
+bosch_urls = ['https://rueins.ru/acsessuar/serie2-fel053ms2/',]
+
 ua = UserAgent()
 
 downloads_dir = '/var/www/www-root/data/www/manualbase.ru/uploads/download/electro'
@@ -184,42 +186,75 @@ def compress_pdf(file_name):
         writer.write(f)
 
 
-
-print('Start requesting models list in database')
-manual_titles = get_manual_titles_from_donor()
-manual_titles = [title.upper() for title in manual_titles]
-print('Stop requesting models list in database')
-all_brands = get_brands_list(base_url)
-print(f'All brands count: {len(all_brands)}')
-count = 1
-for brand in all_brands:
-    categories = get_categories_list(brand[1])
-    for category in categories:
-        models = get_models_list(category[1])
-        for model in models:
-            manual_link = get_manual_link(model[1])
-            if manual_link:
-                file_name = manual_link[0].replace(' ', '-')
-                model_name = manual_link[0].split('.')[0]
-                full_model_name = f'{brand[0]} {model_name}'
-                file_link = manual_link[1]
-                thumb_name = manual_link[2]
-                thumb_link = manual_link[3]
-                if full_model_name.upper() not in manual_titles:
-                    filesize = download_file_from_url(file_link, file_name, downloads_dir)
-                    thumbsize = download_file_from_url(thumb_link, thumb_name, downloads_thumbs_dir, is_thumb=True)
-                    if filesize:
-                        # print(f'Файл {manual_link[0]} сохранен, размер: {filesize}')
-                        xfields = create_xfields(category[0].replace(brand[0], '').capitalize(), brand[0])
-                        # print(f'{manual_link[0]}, {manual_link[1]}, {manual_link[2]}, {xfields}, {filesize}')
-                        if create_download(full_model_name, xfields, 6, file_name, filesize, thumb_name):
-                            print(f'{count}. Модель {full_model_name} успешно добавлена в БД')
-                            count += 1
-                            print('Пауза на 5 секунд')
-                            time.sleep(5)
+def main():
+    print('Start requesting models list in database')
+    manual_titles = get_manual_titles_from_donor()
+    manual_titles = [title.upper() for title in manual_titles]
+    print('Stop requesting models list in database')
+    all_brands = get_brands_list(base_url)
+    print(f'All brands count: {len(all_brands)}')
+    count = 1
+    for brand in all_brands:
+        categories = get_categories_list(brand[1])
+        for category in categories:
+            models = get_models_list(category[1])
+            for model in models:
+                manual_link = get_manual_link(model[1])
+                if manual_link:
+                    file_name = manual_link[0].replace(' ', '-')
+                    model_name = manual_link[0].split('.')[0]
+                    full_model_name = f'{brand[0]} {model_name}'
+                    file_link = manual_link[1]
+                    thumb_name = manual_link[2]
+                    thumb_link = manual_link[3]
+                    if full_model_name.upper() not in manual_titles:
+                        filesize = download_file_from_url(file_link, file_name, downloads_dir)
+                        thumbsize = download_file_from_url(thumb_link, thumb_name, downloads_thumbs_dir, is_thumb=True)
+                        if filesize:
+                            # print(f'Файл {manual_link[0]} сохранен, размер: {filesize}')
+                            xfields = create_xfields(category[0].replace(brand[0], '').capitalize(), brand[0])
+                            # print(f'{manual_link[0]}, {manual_link[1]}, {manual_link[2]}, {xfields}, {filesize}')
+                            if create_download(full_model_name, xfields, 6, file_name, filesize, thumb_name):
+                                print(f'{count}. Модель {full_model_name} успешно добавлена в БД')
+                                count += 1
+                                print('Пауза на 5 секунд')
+                                time.sleep(5)
+                        else:
+                            print('Download error or file is too big')
                     else:
-                        print('Download error or file is too big')
+                        print(f'Model {full_model_name} already exists. Passing')
                 else:
-                    print(f'Model {model_name} already exists. Passing')
+                    print(f'Ссылка на инструкцию для модели {model[0]} не получена.')
+
+
+if __name__ == '__main__':
+    # main{}
+    count = 1
+    for model in bosch_urls:
+        manual_link = get_manual_link(model[1])
+        if manual_link:
+            file_name = manual_link[0].replace(' ', '-')
+            model_name = manual_link[0].split('.')[0]
+            full_model_name = f'Bosch {model_name}'
+            file_link = manual_link[1]
+            thumb_name = manual_link[2]
+            thumb_link = manual_link[3]
+            if True:
+            # if full_model_name.upper() not in manual_titles:
+                filesize = download_file_from_url(file_link, file_name, downloads_dir)
+                thumbsize = download_file_from_url(thumb_link, thumb_name, downloads_thumbs_dir, is_thumb=True)
+                if filesize:
+                    # print(f'Файл {manual_link[0]} сохранен, размер: {filesize}')
+                    xfields = create_xfields('Test category', 'Bosch')
+                    # print(f'{manual_link[0]}, {manual_link[1]}, {manual_link[2]}, {xfields}, {filesize}')
+                    if create_download(full_model_name, xfields, 6, file_name, filesize, thumb_name):
+                        print(f'{count}. Модель {full_model_name} успешно добавлена в БД')
+                        count += 1
+                        print('Пауза на 5 секунд')
+                        time.sleep(5)
+                else:
+                    print('Download error or file is too big')
             else:
-                print(f'Ссылка на инструкцию для модели {model[0]} не получена.')
+                print(f'Model {full_model_name} already exists. Passing')
+        else:
+            print(f'Ссылка на инструкцию для модели {model[0]} не получена.')
