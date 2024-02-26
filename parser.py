@@ -7,6 +7,8 @@ from fake_useragent import UserAgent
 from PIL import Image
 import pymorphy2
 from pypdf import PdfReader, PdfWriter
+import aspose.pdf as ap
+
 
 from database.orm import create_download, get_manual_titles_from_donor
 
@@ -20,7 +22,7 @@ downloads_thumbs_dir = '/var/www/www-root/data/www/manualbase.ru/uploads/downloa
 # downloads_dir = 'pdf'
 # downloads_thumbs_dir = 'pdf/thumbs'
 
-MAX_FILE_SIZE = 5000000
+MAX_FILE_SIZE = 8000000
 
 
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
@@ -146,10 +148,14 @@ def download_file_from_url(url, file_name, dest_folder, is_thumb=False):
         file_path = f"{dest_folder}/{file_name}"
         with open(file_path, mode="wb") as file:
             file.write(response.content)
-        # compress_pdf(file_path)
         filesize = os.path.getsize(file_path)
+        print(f'File size BEFORE compression: {filesize}')
+        compress_pdf(file_path)
+        filesize = os.path.getsize(file_path)
+        print(f'File size AFTER compression: {filesize}')
         if filesize > MAX_FILE_SIZE:
             print(f'File size more than MAX_FILE_SIZE ({MAX_FILE_SIZE}). Skip')
+            os.remove(file_path)
             return None
         if is_thumb:
             dst = f"{dest_folder}/mini/{file_name}"
@@ -170,18 +176,13 @@ def create_xfields(cat_name='', brand_name='', lang='русском', format='pd
 
 
 def compress_pdf(file_name):
-    reader = PdfReader(file_name)
-    writer = PdfWriter()
+    compressPdfDocument = ap.Document(file_name)
+    pdfoptimizeOptions = ap.optimization.OptimizationOptions()
+    pdfoptimizeOptions.image_compression_options.compress_images = True
+    pdfoptimizeOptions.image_compression_options.image_quality = 50
+    compressPdfDocument.optimize_resources(pdfoptimizeOptions)
+    compressPdfDocument.save(file_name)
 
-    for page in reader.pages:
-        writer.add_page(page)
-
-    for page in writer.pages:
-        for img in page.images:
-            img.replace(img.image, quality=50)
-
-    with open(file_name, "wb") as f:
-        writer.write(f)
 
 
 print('Start requesting models list in database')
