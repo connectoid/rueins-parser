@@ -150,7 +150,10 @@ def download_file_from_url(url, file_name, dest_folder, is_thumb=False):
             file.write(response.content)
         filesize = os.path.getsize(file_path)
         print(f'File size BEFORE compression: {filesize}')
-        compress_pdf(file_path)
+        try:
+            compress_pdf(file_path)
+        except Exception as e:
+            print(f'Compression error: {e}')
         filesize = os.path.getsize(file_path)
         print(f'File size AFTER compression: {filesize}')
         if filesize > MAX_FILE_SIZE:
