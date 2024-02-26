@@ -195,7 +195,7 @@ def main():
     print(f'All brands count: {len(all_brands)}')
     count = 1
     brands = []
-    brands.append(all_brands[0])
+    brands.append(all_brands[3])
     for brand in all_brands:
         categories = get_categories_list(brand[1])
         for category in categories:
