@@ -231,7 +231,7 @@ if __name__ == '__main__':
     # main{}
     count = 1
     for model in bosch_urls:
-        manual_link = get_manual_link(model[1])
+        manual_link = get_manual_link(model)
         if manual_link:
             file_name = manual_link[0].replace(' ', '-')
             model_name = manual_link[0].split('.')[0]
