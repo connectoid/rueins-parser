@@ -47,7 +47,7 @@ class Download(Base_donor):
     allow_block = Column(Integer, nullable=False, default=0)
     news_fixed = Column(Integer, nullable=False, default=0)
     vip = Column(Integer, nullable=False, default=0)
-    pdf_view = Column(Integer, nullable=False, default=1)
+    pdf_view = Column(Integer, nullable=False, default=0)
     size = Column(Integer, nullable=False, default=0)
     title = Column(String(255), nullable=False, default='')
     # alt_name = Column(String(255), nullable=False)
