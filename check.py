@@ -71,8 +71,10 @@ count = 1
 all_brands = get_brands(base_url)
 
 for brand in all_brands:
+    print('='*25, brand[0])
     all_cats = get_categories(brand[1])
     for cat in all_cats:
+        print('='*25, cat[0])
         all_models = get_models(cat[1])
         for model in all_models:
             print(f'{count}. {model[0]}: {model[1]}')
