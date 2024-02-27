@@ -25,7 +25,7 @@ downloads_thumbs_dir = '/var/www/www-root/data/www/manualbase.ru/uploads/downloa
 # downloads_dir = 'pdf'
 # downloads_thumbs_dir = 'pdf/thumbs'
 
-MAX_FILE_SIZE = 100000000
+MAX_FILE_SIZE = 10000000
 
 
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
@@ -130,6 +130,9 @@ def get_manual_link(url):
     try:
         file_link = soup.find('div', class_='main-content-iframe').find('a')['href']
         thumb_link = soup.find('div', class_='main-content-iframe').find('img')['src']
+        if thumb_link.split('wp-content')[0] != 'https://rueins.ru/':
+            thumb_link = 'https://rueins.ru' + thumb_link
+            print(f'~~~~~~~~~~~~~~~~~~~ FIXING LINK ON THUMBNAIL: {thumb_link}')
         file_name = file_link.split('/')[-1]
         thumb_name = thumb_link.split('/')[-1]
         manual_link.append(file_name)
@@ -192,7 +195,7 @@ def main():
     manual_titles = [title.upper() for title in manual_titles]
     print('Stop requesting models list in database')
     all_brands = get_brands_list(base_url)
-    all_brands = all_brands[49:]
+    all_brands = all_brands[64:]
     print(f'All brands count: {len(all_brands)}')
     count = 1
     for brand in all_brands:
