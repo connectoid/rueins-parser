@@ -217,7 +217,7 @@ def main():
                             if create_download(full_model_name, xfields, 6, file_name, filesize, thumb_name):
                                 print(f'{count}. Модель {full_model_name} успешно добавлена в БД')
                                 count += 1
-                                if count >= 80:
+                                if count >= 300:
                                     return None
                         else:
                             print('Download error or file is too big')
