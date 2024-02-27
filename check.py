@@ -14,7 +14,7 @@ pioneers = 'https://mnogo-dok.ru/instrukcii/sendvalues/type/%D0%90%D0%B2%D1%82%D
 def get_brands(url):
     all_brands = []
     response = requests.post(url=url, headers=headers)
-    response.encoding = 'utf-8'
+    response.encoding = 'windows-1251'
     soup = BeautifulSoup(response.text, 'lxml')
     blocks = soup.find_all('ul', class_='catalog')
     brands = blocks[1].find_all('a')
@@ -25,7 +25,7 @@ def get_brands(url):
 def get_models(url):
     all_models = []
     response = requests.post(url=url, headers=headers)
-    response.encoding = 'utf-8'
+    response.encoding = 'windows-1251'
     soup = BeautifulSoup(response.text, 'lxml')
     blocks = soup.find_all('div', class_='ins-block brand-block')
     for block in blocks:
@@ -39,7 +39,7 @@ def get_models(url):
 def get_categories(url):
     all_cats = []
     response = requests.post(url=url, headers=headers)
-    response.encoding = 'utf-8'
+    response.encoding = 'windows-1251'
     soup = BeautifulSoup(response.text, 'lxml')
     cat_urls = soup.find('div', class_='tech-items flex').find_all('a')
     cat_names = soup.find('div', class_='tech-items flex').find_all('span')
