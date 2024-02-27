@@ -41,6 +41,9 @@ def get_categories(url):
     response = requests.post(url=url, headers=headers)
     response.encoding = 'windows-1251'
     soup = BeautifulSoup(response.text, 'lxml')
+
+    ########## TRY EXCEPT !
+    
     cat_urls = soup.find('div', class_='tech-items flex').find_all('a')
     cat_names = soup.find('div', class_='tech-items flex').find_all('span')
     cat_urls = [base_url + cat['href'] for cat in cat_urls]
