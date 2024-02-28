@@ -195,7 +195,7 @@ def main():
     manual_titles = [title.upper() for title in manual_titles]
     print('Stop requesting models list in database')
     all_brands = get_brands_list(base_url)
-    all_brands = all_brands[64:]
+    all_brands = all_brands[120:]
     print(f'All brands count: {len(all_brands)}')
     count = 1
     for brand in all_brands:
