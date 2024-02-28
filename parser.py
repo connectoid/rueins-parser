@@ -1,6 +1,7 @@
 import os
 import shutil
 from time import time
+import logging
 
 import requests
 from bs4 import BeautifulSoup
@@ -21,6 +22,18 @@ ua = UserAgent()
 
 downloads_dir = '/var/www/www-root/data/www/manualbase.ru/uploads/download/electro'
 downloads_thumbs_dir = '/var/www/www-root/data/www/manualbase.ru/uploads/download/electro/thumbs'
+
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(
+    level=logging.INFO,
+    filename = "parserlog.log",
+    filemode='a',
+    format = "%(asctime)s - %(module)s - %(levelname)s - %(funcName)s: %(lineno)d - %(message)s",
+    datefmt='%H:%M:%S',
+    )
+logger.info('Starting parser')
+
 
 # downloads_dir = 'pdf'
 # downloads_thumbs_dir = 'pdf/thumbs'
@@ -195,7 +208,7 @@ def main():
     manual_titles = [title.upper() for title in manual_titles]
     print('Stop requesting models list in database')
     all_brands = get_brands_list(base_url)
-    all_brands = all_brands[120:]
+    all_brands = all_brands[187:]
     print(f'All brands count: {len(all_brands)}')
     count = 1
     for brand in all_brands:
@@ -220,8 +233,9 @@ def main():
                             # print(f'{manual_link[0]}, {manual_link[1]}, {manual_link[2]}, {xfields}, {filesize}')
                             if create_download(full_model_name, xfields, 6, file_name, filesize, thumb_name):
                                 print(f'{count}. Модель {full_model_name} успешно добавлена в БД')
+                                logger.info(f'{count}. Модель {full_model_name} успешно добавлена в БД')
                                 count += 1
-                                if count >= 600:
+                                if count > 1000:
                                     return None
                         else:
                             print('Download error or file is too big')
