@@ -198,7 +198,7 @@ def main():
     manual_titles = [title.upper() for title in manual_titles]
     print('Stop requesting models list in database')
     all_brands = get_brands_list(base_url)
-    all_brands = all_brands[260:]
+    all_brands = all_brands[343:]
     print(f'All brands count: {len(all_brands)}')
     count = 1
     for brand in all_brands:
@@ -224,7 +224,7 @@ def main():
                             if create_download(full_model_name, xfields, 6, file_name, filesize, thumb_name):
                                 print(f'{count}. Модель {full_model_name} успешно добавлена в БД')
                                 count += 1
-                                if count > 1000:
+                                if count > 2000:
                                     return None
                         else:
                             print('Download error or file is too big')
