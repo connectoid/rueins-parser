@@ -60,7 +60,7 @@ def get_categories(url):
 
 
 def download_file_by_id(file_id, file_name='checkout.pdf'):
-    download_url = f'{base_url}?id={file_id}'
+    download_url = f'{base_download_url}?id={file_id}'
     print(download_url)
     response = requests.get(url=download_url, headers=headers)
     print(response.status_code)
