@@ -61,6 +61,7 @@ def get_categories(url):
 
 def download_file_by_id(file_id, file_name='checkout.pdf'):
     response = requests.get(url=f'{base_url}?id={file_id}', headers=headers)
+    print(response.status_code)
     if response.status_code == 200:
         file_name = f"{file_name}.pdf"
         with open(file_name, mode="wb") as file:
