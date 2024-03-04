@@ -61,7 +61,9 @@ def get_categories(url):
 
 def download_file_by_id(file_id, file_name='checkout.pdf'):
     download_url = f'{base_url}?id={file_id}'
+    print(download_url)
     response = requests.get(url=download_url, headers=headers)
+    print(response.status_code)
     if response.status_code == 200:
         file_name = f"{file_name}.pdf"
         with open(file_name, mode="wb") as file:
@@ -114,7 +116,7 @@ def main():
                     print(f'{count}. {model_name}: {model_id}')
                     xfields = create_xfields(category_name, brand_name)
                     file_name, file_size = download_file_by_id(model_id, model_name)
-                    if file_size < MAX_FILE_SIZE:
+                    if file_name:
                         create_download(model_name, xfields, CAT_ID, file_name, file_size, 'thumble_path')
                     count += 1
                     return
