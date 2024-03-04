@@ -136,7 +136,7 @@ def main():
                     print(f'{count}. {model_name}: {model_id}')
                     xfields = create_xfields(category_name, brand_name)
                     full_file_name, file_size = download_file_by_id(downloads_dir, model_id, file_name)
-                    thumbnale_file =  download_thumbnail(downloads_dir, downloads_thumbs_dir, file_name)
+                    thumbnale_file =  download_thumbnail(downloads_dir, downloads_thumbs_dir, full_file_name)
                     if full_file_name:
                         create_download(model_name, xfields, CAT_ID, full_file_name, file_size, thumbnale_file)
                     count += 1
