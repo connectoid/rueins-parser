@@ -131,7 +131,7 @@ def main():
                     brand_name = brand[0]
                     category_name = cat[0]
                     model_name = model[0].strip()
-                    file_name = f'{model[0]}-00{count}'
+                    file_name = f'{model[0]}-00{count}'.strip()
                     model_id = model[1]
                     print(f'{count}. {model_name}: {model_id}')
                     xfields = create_xfields(category_name, brand_name)
