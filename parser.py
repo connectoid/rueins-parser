@@ -178,7 +178,7 @@ def create_xfields(cat_name='', brand_name='', lang='русском', format='pd
     example = 'type|коммуникатор||develop|ACER||lang|русском||fformat|pdf||board|'
     xfields = f'type|{cat_name}||develop|{brand_name}||lang|{lang}||fformat|{format}||board|'
     return xfields
-
+ 
 
 def compress_pdf(file_name):
     reader = PdfReader(file_name)

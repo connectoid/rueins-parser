@@ -19,7 +19,7 @@ def get_manual_titles_from_donor():
     return manuals_titles
 
 
-def create_download(title, xfields, category_id, filename, filesize, thumbnale_filename):
+def create_download(title, xfields, category_id, filename, filesize, thumbnale_filename='thumbnail_empty'):
     session = Session()
     download = session.query(Download).filter(Download.title == title).first()
     if download is None:

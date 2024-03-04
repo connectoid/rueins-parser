@@ -2,6 +2,7 @@ import requests
 import os
 
 from bs4 import BeautifulSoup
+from pdf2image import convert_from_path
 
 from database.orm import create_download, get_manual_titles_from_donor
 
@@ -75,6 +76,17 @@ def download_file_by_id(downloads_dir, file_id, file_name='checkout.pdf'):
         print(f'Ошибка сохранения файла {file_name}: {response.status_code}')
         return False, False
 
+def download_thumbnail(downloads_dir, downloads_thumbs_dir, file_name):
+    file_path = f'{downloads_dir}/{file_name}'
+    downloads_thumbs_dir_mini = f'{downloads_thumbs_dir}/mini'
+    try:
+        pages = convert_from_path(file_path, 500)
+        pages[0].save(f'{downloads_thumbs_dir}/{file_name}.jpg', 'JPEG')
+        pages[0].save(f'{downloads_thumbs_dir_mini}/{file_name}.jpg', 'JPEG')
+        return f'{file_name}.jpg'
+    except Exception as e:
+        print(f'Ошибка сохранения миниатюры: {e}')
+        return False
 
 def create_xfields(cat_name='', brand_name='', lang='русском', format='pdf'):
     example = 'type|коммуникатор||develop|ACER||lang|русском||fformat|pdf||board|'
@@ -112,13 +124,15 @@ def main():
                 for model in all_models:
                     brand_name = brand[0]
                     category_name = cat[0]
-                    model_name = f'{brand[0]}-{model[0]}-00{count}'
+                    model_name = model[0]
+                    file_name = f'{model[0]}-00{count}'
                     model_id = model[1]
                     print(f'{count}. {model_name}: {model_id}')
                     xfields = create_xfields(category_name, brand_name)
                     file_name, file_size = download_file_by_id(downloads_dir, model_id, model_name)
+                    thumbnale_file =  download_thumbnail(downloads_dir, downloads_thumbs_dir, file_name)
                     if file_name:
-                        create_download(model_name, xfields, CAT_ID, file_name, file_size, 'thumble_path')
+                        create_download(model_name, xfields, CAT_ID, file_name, file_size, thumbnale_file)
                     count += 1
                     return
 
