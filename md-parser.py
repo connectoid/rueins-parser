@@ -65,7 +65,7 @@ def download_file_by_id(downloads_dir, file_id, file_name='checkout.pdf'):
     response = requests.get(url=download_url, headers=headers)
     print(response.status_code)
     if response.status_code == 200:
-        file_name = f'{file_name}.pdf'
+        file_name = f'{file_name}.pdf'.replace(' ', '-').lower()
         file_path = f'{downloads_dir}/{file_name}'
         with open(file_path, mode="wb") as file:
             file.write(response.content)
