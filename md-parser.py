@@ -59,16 +59,17 @@ def get_categories(url):
     return all_cats
 
 
-def download_file_by_id(file_id, file_name='checkout.pdf'):
+def download_file_by_id(downloads_dir, file_id, file_name='checkout.pdf'):
     download_url = f'{base_download_url}?id={file_id}'
     print(download_url)
     response = requests.get(url=download_url, headers=headers)
     print(response.status_code)
     if response.status_code == 200:
-        file_name = f"{file_name}.pdf"
-        with open(file_name, mode="wb") as file:
+        file_name = f'{file_name}.pdf'
+        file_path = f'{downloads_dir}/{file_name}'
+        with open(file_path, mode="wb") as file:
             file.write(response.content)
-        filesize = os.path.getsize(file_name)
+        filesize = os.path.getsize(file_path)
         return file_name, filesize
     else:
         print(f'Ошибка сохранения файла {file_name}: {response.status_code}')
@@ -115,7 +116,7 @@ def main():
                     model_id = model[1]
                     print(f'{count}. {model_name}: {model_id}')
                     xfields = create_xfields(category_name, brand_name)
-                    file_name, file_size = download_file_by_id(model_id, model_name)
+                    file_name, file_size = download_file_by_id(downloads_dir, model_id, model_name)
                     if file_name:
                         create_download(model_name, xfields, CAT_ID, file_name, file_size, 'thumble_path')
                     count += 1
