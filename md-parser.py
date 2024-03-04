@@ -101,7 +101,7 @@ def main():
     all_brands = get_brands(base_url)
 
     for brand in all_brands:
-        if brand[:1].upper() == FIRST_LETTER.upper():
+        if brand[0][:1].upper() == FIRST_LETTER.upper():
             all_cats = get_categories(brand[1])
             for cat in all_cats:
                 all_models = get_models(cat[1])
