@@ -3,6 +3,7 @@ import os
 
 from bs4 import BeautifulSoup
 from pdf2image import convert_from_path
+from PIL import Image
 
 from database.orm import create_download, get_manual_titles_from_donor
 
@@ -79,10 +80,15 @@ def download_file_by_id(downloads_dir, file_id, file_name='checkout.pdf'):
 def download_thumbnail(downloads_dir, downloads_thumbs_dir, file_name):
     file_path = f'{downloads_dir}/{file_name}'
     downloads_thumbs_dir_mini = f'{downloads_thumbs_dir}/mini'
+    thumbnail_file_name = f'{downloads_thumbs_dir}/{file_name}.jpg'
+    thumbnail_file_name_mini = f'{downloads_thumbs_dir_mini}/{file_name}.jpg'
     try:
         pages = convert_from_path(file_path, 500)
-        pages[0].save(f'{downloads_thumbs_dir}/{file_name}.jpg', 'JPEG')
-        pages[0].save(f'{downloads_thumbs_dir_mini}/{file_name}.jpg', 'JPEG')
+        pages[0].save(thumbnail_file_name, 'JPEG')
+        pages[0].save(thumbnail_file_name_mini, 'JPEG')
+        image = Image.open(thumbnail_file_name_mini)
+        image.thumbnail((200, 200))
+        image.save(thumbnail_file_name_mini)
         return f'{file_name}.jpg'
     except Exception as e:
         print(f'Ошибка сохранения миниатюры: {e}')
@@ -124,15 +130,15 @@ def main():
                 for model in all_models:
                     brand_name = brand[0]
                     category_name = cat[0]
-                    model_name = model[0]
+                    model_name = model[0].strip()
                     file_name = f'{model[0]}-00{count}'
                     model_id = model[1]
                     print(f'{count}. {model_name}: {model_id}')
                     xfields = create_xfields(category_name, brand_name)
-                    file_name, file_size = download_file_by_id(downloads_dir, model_id, model_name)
+                    full_file_name, file_size = download_file_by_id(downloads_dir, model_id, file_name)
                     thumbnale_file =  download_thumbnail(downloads_dir, downloads_thumbs_dir, file_name)
-                    if file_name:
-                        create_download(model_name, xfields, CAT_ID, file_name, file_size, thumbnale_file)
+                    if full_file_name:
+                        create_download(model_name, xfields, CAT_ID, full_file_name, file_size, thumbnale_file)
                     count += 1
                     return
 
