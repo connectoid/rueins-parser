@@ -4,6 +4,8 @@ import os
 from bs4 import BeautifulSoup
 from pdf2image import convert_from_path
 from PIL import Image
+import pypdfium2 as pdfium
+
 
 from database.orm import create_download, get_manual_titles_from_donor
 
@@ -78,17 +80,21 @@ def download_file_by_id(downloads_dir, file_id, file_name='checkout.pdf'):
         return False, False
 
 def download_thumbnail(downloads_dir, downloads_thumbs_dir, file_name):
+    file_name = file_name.replace('.pdf', '')
     file_path = f'{downloads_dir}/{file_name}'
     downloads_thumbs_dir_mini = f'{downloads_thumbs_dir}/mini'
     thumbnail_file_name = f'{downloads_thumbs_dir}/{file_name}.jpg'
     thumbnail_file_name_mini = f'{downloads_thumbs_dir_mini}/{file_name}.jpg'
     try:
-        pages = convert_from_path(file_path, 500)
-        pages[0].save(thumbnail_file_name, 'JPEG')
-        pages[0].save(thumbnail_file_name_mini, 'JPEG')
-        image = Image.open(thumbnail_file_name_mini)
-        image.thumbnail((200, 200))
+        pdf = pdfium.PdfDocument(file_path)
+        page = pdf[0]
+        image = page.render(scale=4).to_pil()
+        image.save(thumbnail_file_name)
         image.save(thumbnail_file_name_mini)
+
+        mini_image = Image.open(thumbnail_file_name_mini)
+        mini_image.thumbnail((200, 200))
+        mini_image.save(thumbnail_file_name_mini)
         return f'{file_name}.jpg'
     except Exception as e:
         print(f'Ошибка сохранения миниатюры: {e}')
