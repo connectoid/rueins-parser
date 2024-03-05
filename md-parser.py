@@ -54,14 +54,16 @@ def get_categories(url):
     soup = BeautifulSoup(response.text, 'lxml')
 
     ########## TRY EXCEPT !
-    
-    cat_urls = soup.find('div', class_='tech-items flex').find_all('a')
-    cat_names = soup.find('div', class_='tech-items flex').find_all('span')
-    cat_urls = [base_url + cat['href'] for cat in cat_urls]
-    cat_names = [name.text for name in cat_names]
-    all_cats = list(zip(cat_names, cat_urls))
-    return all_cats
-
+    try:
+        cat_urls = soup.find('div', class_='tech-items flex').find_all('a')
+        cat_names = soup.find('div', class_='tech-items flex').find_all('span')
+        cat_urls = [base_url + cat['href'] for cat in cat_urls]
+        cat_names = [name.text for name in cat_names]
+        all_cats = list(zip(cat_names, cat_urls))
+        return all_cats
+    except Exception as e:
+        print(f'Ошибка получения категории: {e}')
+        return False
 
 def download_file_by_id(downloads_dir, file_id, file_name='checkout.pdf'):
     download_url = f'{base_download_url}?id={file_id}'
@@ -118,35 +120,55 @@ def get_file_size(url):
     
 # all_models = get_models(pioneers)
 
-FIRST_LETTER = 'a'
-CAT_ID = '4411'
-downloads_dir = f'/var/www/www-root/data/www/manualbase.ru/uploads/download/{FIRST_LETTER}'
-downloads_thumbs_dir = f'/var/www/www-root/data/www/manualbase.ru/uploads/download/{FIRST_LETTER}/thumbs'
 
+letters = [
+    ['a', 4411],
+    ['b', 4412],
+    ['c', 4413],
+    ['d', 4414],
+    ['e', 4415],
+    ['f', 4416],
+    ['g', 4417],
+]
 
-def main():
+def main(downloads_dir, downloads_thumbs_dir):
     count = 1
     all_brands = get_brands(base_url)
 
     for brand in all_brands:
         if brand[0][:1].upper() == FIRST_LETTER.upper():
             all_cats = get_categories(brand[1])
-            for cat in all_cats:
-                all_models = get_models(cat[1])
-                for model in all_models:
-                    brand_name = brand[0]
-                    category_name = cat[0]
-                    model_name = model[0].strip()
-                    file_name = f'{model[0]}-00{count}'.strip()
-                    model_id = model[1]
-                    print(f'{count}. {model_name}: {model_id}')
-                    xfields = create_xfields(category_name, brand_name)
-                    full_file_name, file_size = download_file_by_id(downloads_dir, model_id, file_name)
-                    thumbnale_file =  download_thumbnail(downloads_dir, downloads_thumbs_dir, full_file_name)
-                    if full_file_name:
-                        create_download(model_name, xfields, CAT_ID, full_file_name, file_size, thumbnale_file)
-                    count += 1
-                    return
+            if all_cats:
+                for cat in all_cats:
+                    all_models = get_models(cat[1])
+                    for model in all_models:
+                        model_name = model[0].strip()
+                        if model_name.upper() not in manual_titles:
+                            brand_name = brand[0]
+                            category_name = cat[0]
+                            file_name = f'{model[0]}-00{count}'.strip()
+                            model_id = model[1]
+                            print(f'{count}. {model_name}: {model_id}')
+                            xfields = create_xfields(category_name, brand_name)
+                            full_file_name, file_size = download_file_by_id(downloads_dir, model_id, file_name)
+                            thumbnale_file =  download_thumbnail(downloads_dir, downloads_thumbs_dir, full_file_name)
+                            if full_file_name:
+                                create_download(model_name, xfields, CAT_ID, full_file_name, file_size, thumbnale_file)
+                            count += 10
+                            return
+                        else:
+                            print(f'=========> Модель {model_name} уже есть в базе. Пропускаем')
+            else:
+                print('Пропускаем категорию')
+
+manual_titles = get_manual_titles_from_donor()
+manual_titles = [title.upper() for title in manual_titles]
 
 if __name__ == '__main__':
-    main()
+    for brand_letter in letters:
+        FIRST_LETTER = brand_letter[0]
+        CAT_ID = brand_letter[1]
+        downloads_dir = f'/var/www/www-root/data/www/manualbase.ru/uploads/download/{FIRST_LETTER}'
+        downloads_thumbs_dir = f'/var/www/www-root/data/www/manualbase.ru/uploads/download/{FIRST_LETTER}/thumbs'
+
+        main(downloads_dir, downloads_thumbs_dir)
