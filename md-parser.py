@@ -80,11 +80,11 @@ def download_file_by_id(downloads_dir, file_id, file_name='checkout.pdf'):
         return False, False
 
 def download_thumbnail(downloads_dir, downloads_thumbs_dir, file_name):
-    file_name = file_name.replace('.pdf', '')
+    file_name_wo_pdf = file_name.replace('.pdf', '')
     file_path = f'{downloads_dir}/{file_name}'
     downloads_thumbs_dir_mini = f'{downloads_thumbs_dir}/mini'
-    thumbnail_file_name = f'{downloads_thumbs_dir}/{file_name}.jpg'
-    thumbnail_file_name_mini = f'{downloads_thumbs_dir_mini}/{file_name}.jpg'
+    thumbnail_file_name = f'{downloads_thumbs_dir}/{file_name_wo_pdf}.jpg'
+    thumbnail_file_name_mini = f'{downloads_thumbs_dir_mini}/{file_name_wo_pdf}.jpg'
     try:
         pdf = pdfium.PdfDocument(file_path)
         page = pdf[0]
@@ -95,7 +95,7 @@ def download_thumbnail(downloads_dir, downloads_thumbs_dir, file_name):
         mini_image = Image.open(thumbnail_file_name_mini)
         mini_image.thumbnail((200, 200))
         mini_image.save(thumbnail_file_name_mini)
-        return f'{file_name}.jpg'
+        return f'{file_name_wo_pdf}.jpg'
     except Exception as e:
         print(f'Ошибка сохранения миниатюры: {e}')
         return False
