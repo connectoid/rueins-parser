@@ -62,9 +62,7 @@ def get_categories(url):
 
 def download_file_by_id(downloads_dir, file_id, file_name='checkout.pdf'):
     download_url = f'{base_download_url}?id={file_id}'
-    print(download_url)
     response = requests.get(url=download_url, headers=headers)
-    print(response.status_code)
     if response.status_code == 200:
         file_name = f'{file_name}.pdf'.replace(' ', '-').lower()
         file_path = f'{downloads_dir}/{file_name}'
