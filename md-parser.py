@@ -120,12 +120,12 @@ def get_file_size(url):
 
 letters = [
     ['a', 4411],
-    ['b', 4412],
-    ['c', 4413],
-    ['d', 4414],
-    ['e', 4415],
-    ['f', 4416],
-    ['g', 4417],
+    # ['b', 4412],
+    # ['c', 4413],
+    # ['d', 4414],
+    # ['e', 4415],
+    # ['f', 4416],
+    # ['g', 4417],
 ]
 
 MAX_FILE_SIZE = 10000000
@@ -155,8 +155,8 @@ def main(downloads_dir, downloads_thumbs_dir):
                             if full_file_name:
                                 create_download(model_name, xfields, CAT_ID, full_file_name, file_size, thumbnale_file)
                             count += 1
-                            if count > MAX_ITERATIONS:
-                                return
+                            # if count > MAX_ITERATIONS:
+                            #     return
                         else:
                             print(f'=========> Модель {model_name} уже есть в базе. Пропускаем')
             else:
