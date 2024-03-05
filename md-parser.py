@@ -9,17 +9,12 @@ import pypdfium2 as pdfium
 
 from database.orm import create_download, get_manual_titles_from_donor
 
-downloads_dir = '/var/www/www-root/data/www/manualbase.ru/uploads/download/electro'
-downloads_thumbs_dir = '/var/www/www-root/data/www/manualbase.ru/uploads/download/electro/thumbs'
-
 
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
 base_download_url = 'https://mnogo-dok.ru/download.php'
 base_url = 'https://mnogo-dok.ru'
 
-pioneers = 'https://mnogo-dok.ru/instrukcii/sendvalues/type/%D0%90%D0%B2%D1%82%D0%BE%D1%82%D0%B5%D1%85%D0%BD%D0%B8%D0%BA%D0%B0/%D0%90%D0%B2%D1%82%D0%BE%D0%BC%D0%B0%D0%B3%D0%BD%D0%B8%D1%82%D0%BE%D0%BB%D1%8B/Pioneer/'
 
-MAX_FILE_SIZE = 10000000
 
 
 def get_brands(url):
@@ -76,6 +71,8 @@ def download_file_by_id(downloads_dir, file_id, file_name='checkout.pdf'):
         with open(file_path, mode="wb") as file:
             file.write(response.content)
         filesize = os.path.getsize(file_path)
+        if filesize > MAX_FILE_SIZE:
+            print(f'~~~~   ~~~~   ~~~~   Размер ({filesize} kb) файла больше максимального ({MAX_FILE_SIZE})')
         return file_name, filesize
     else:
         print(f'Ошибка сохранения файла {file_name}: {response.status_code}')
@@ -131,6 +128,9 @@ letters = [
     ['g', 4417],
 ]
 
+MAX_FILE_SIZE = 10000000
+MAX_ITERATIONS = 10
+
 def main(downloads_dir, downloads_thumbs_dir):
     count = 1
     all_brands = get_brands(base_url)
@@ -154,8 +154,9 @@ def main(downloads_dir, downloads_thumbs_dir):
                             thumbnale_file =  download_thumbnail(downloads_dir, downloads_thumbs_dir, full_file_name)
                             if full_file_name:
                                 create_download(model_name, xfields, CAT_ID, full_file_name, file_size, thumbnale_file)
-                            count += 10
-                            return
+                            count += 1
+                            if count > MAX_ITERATIONS:
+                                return
                         else:
                             print(f'=========> Модель {model_name} уже есть в базе. Пропускаем')
             else:
