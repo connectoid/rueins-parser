@@ -144,6 +144,9 @@ def main(downloads_dir, downloads_thumbs_dir):
                     for model in all_models:
                         model_name = model[0].strip()
                         if model_name.upper() not in manual_titles:
+                            model_name = model_name.replace('/', '-')
+                            model_name = model_name.replace('\\', '-')
+                            model_name = model_name.replace('+', '-')
                             brand_name = brand[0]
                             category_name = cat[0]
                             file_name = f'{model[0]}-00{count}'.strip()
