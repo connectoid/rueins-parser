@@ -134,7 +134,7 @@ letters = [
     # ['e', 4415], #2679
     # ['f', 4416], #776
     # ['g', 4417], #2118
-    ['h', 4418],
+    ['h', 4418], # 1592 +
     # ['i', 4425],
     # ['j', 4419],
     # ['k', 4420],
@@ -152,7 +152,7 @@ letters = [
 MAX_FILE_SIZE = 10000000
 MAX_ITERATIONS = 3
 
-def main(downloads_dir, downloads_thumbs_dir):
+def main(downloads_dir, downloads_thumbs_dir, manual_titles):
     count = 1
     all_brands = get_brands(base_url)
 
@@ -186,10 +186,11 @@ def main(downloads_dir, downloads_thumbs_dir):
             else:
                 print('Пропускаем категорию')
 
-manual_titles = get_manual_titles_from_donor()
-manual_titles = [title.upper() for title in manual_titles]
 
 if __name__ == '__main__':
+    manual_titles = get_manual_titles_from_donor()
+    manual_titles = [title.upper() for title in manual_titles]
+
     for brand_letter in letters:
         FIRST_LETTER = brand_letter[0]
         CAT_ID = brand_letter[1]
@@ -199,4 +200,4 @@ if __name__ == '__main__':
             os.makedirs(f'{downloads_dir}/thumbs')
         if not os.path.exists(f'{downloads_dir}/thumbs/mini'):
             os.makedirs(f'{downloads_dir}/thumbs/mini')
-        main(downloads_dir, downloads_thumbs_dir)
+        main(downloads_dir, downloads_thumbs_dir, manual_titles)
