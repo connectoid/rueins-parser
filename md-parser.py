@@ -175,8 +175,8 @@ def main(downloads_dir, downloads_thumbs_dir):
                             if full_file_name:
                                 create_download(model_name, xfields, CAT_ID, full_file_name, file_size, thumbnale_file)
                             count += 1
-                            if count > MAX_ITERATIONS:
-                                return
+                            # if count > MAX_ITERATIONS:
+                            #     return
                         else:
                             print(f'=========> Модель {model_name} уже есть в базе. Пропускаем')
             else:
