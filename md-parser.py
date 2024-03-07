@@ -164,21 +164,21 @@ def main(downloads_dir, downloads_thumbs_dir, manual_titles):
                     all_models = get_models(cat[1])
                     for model in all_models:
                         model_name = model[0].strip()
+                        model_name = model_name.replace('/', '-')
+                        model_name = model_name.replace('\\', '-')
+                        model_name = model_name.replace('+', '-')
                         if model_name.upper() not in manual_titles:
-                            model_name = model_name.replace('/', '-')
-                            model_name = model_name.replace('\\', '-')
-                            model_name = model_name.replace('+', '-')
                             brand_name = brand[0]
                             category_name = cat[0]
                             file_name = f'{model_name}-00{count}'.strip()
                             model_id = model[1]
-                            print(f'{count}. {model_name}: {model_id}')
                             xfields = create_xfields(category_name, brand_name)
                             full_file_name, file_size = download_file_by_id(downloads_dir, model_id, file_name)
                             thumbnale_file =  download_thumbnail(downloads_dir, downloads_thumbs_dir, full_file_name)
                             if full_file_name:
                                 create_download(model_name, xfields, CAT_ID, full_file_name, file_size, thumbnale_file)
-                            count += 1
+                                print(f'{count}. {model_name}: {model_id}')
+                                count += 1
                             # if count > MAX_ITERATIONS:
                             #     return
                         else:

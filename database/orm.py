@@ -7,7 +7,11 @@ from transliterate import translit, get_available_language_codes
 from .models import Base_donor, Download, Category
 
 # engine_donor = create_engine("mysql+pymysql://admin:s028006000434@localhost/manualsdb_donor?charset=utf8mb4")
-engine_donor = create_engine("mysql+pymysql://root:9a9At1l8IS@localhost/innersun_manualb?charset=utf8mb4")
+engine_donor = create_engine(
+    "mysql+pymysql://root:9a9At1l8IS@localhost/innersun_manualb?charset=utf8mb4",
+    pool_size=20,
+    max_overflow=0
+)
 Base_donor.metadata.create_all(engine_donor)
 Session = sessionmaker(bind=engine_donor)
 
@@ -15,7 +19,7 @@ Session = sessionmaker(bind=engine_donor)
 def get_manual_titles_from_donor():
     session = Session()
     manuals = session.query(Download).all()
-    manuals_titles = [manual.title for manual in manuals]
+    manuals_titles = [manual.title.strip() for manual in manuals]
     return manuals_titles
 
 
