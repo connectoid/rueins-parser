@@ -191,5 +191,8 @@ if __name__ == '__main__':
         CAT_ID = brand_letter[1]
         downloads_dir = f'/var/www/www-root/data/www/manualbase.ru/uploads/download/{FIRST_LETTER}'
         downloads_thumbs_dir = f'/var/www/www-root/data/www/manualbase.ru/uploads/download/{FIRST_LETTER}/thumbs'
-
+        if not os.path.exists(f'{downloads_dir}/thumbs'):
+            os.makedirs(f'{downloads_dir}/thumbs')
+        if not os.path.exists(f'{downloads_dir}/thumbs/mini'):
+            os.makedirs(f'{downloads_dir}/thumbs/mini')
         main(downloads_dir, downloads_thumbs_dir)
