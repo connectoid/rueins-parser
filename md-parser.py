@@ -76,7 +76,9 @@ def download_file_by_id(downloads_dir, file_id, file_name='checkout.pdf'):
             file.write(response.content)
         filesize = os.path.getsize(file_path)
         if filesize > MAX_FILE_SIZE:
-            print(f'~~~~   ~~~~   ~~~~   Размер ({filesize} kb) файла больше максимального ({MAX_FILE_SIZE})')
+            print(f'~~~~   ~~~~   ~~~~   Размер ({filesize} kb) файла больше максимального ({MAX_FILE_SIZE}), Удаляем!')
+            os.remove(file_path)
+            return False, False
         return file_name, filesize
     else:
         print(f'Ошибка сохранения файла {file_name}: {response.status_code}')
@@ -149,7 +151,7 @@ letters = [
     # ['t', 4429],
 ]
 
-MAX_FILE_SIZE = 10000000
+MAX_FILE_SIZE = 15000000
 MAX_ITERATIONS = 3
 
 def main(downloads_dir, downloads_thumbs_dir, manual_titles):
@@ -179,6 +181,8 @@ def main(downloads_dir, downloads_thumbs_dir, manual_titles):
                                 create_download(model_name, xfields, CAT_ID, full_file_name, file_size, thumbnale_file)
                                 print(f'{count}. {model_name}: {model_id}')
                                 count += 1
+                            else:
+                                pass
                             # if count > MAX_ITERATIONS:
                             #     return
                         else:
