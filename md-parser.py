@@ -64,7 +64,13 @@ def download_file_by_id(downloads_dir, file_id, file_name='checkout.pdf'):
     download_url = f'{base_download_url}?id={file_id}'
     response = requests.get(url=download_url, headers=headers)
     if response.status_code == 200:
-        file_name = f'{file_name}.pdf'.replace(' ', '-').lower()
+        filename_string = response.headers['Content-Disposition']
+        try:
+            ext = filename_string.split('filename="')[-1].strip('"').split('.')[-1]
+        except Exception as e:
+            print(f'Ошибка получения разрешения, оставляем PDF: {e}')
+            ext = 'pdf'
+        file_name = f'{file_name}.{ext}'.replace(' ', '-').lower()
         file_path = f'{downloads_dir}/{file_name}'
         with open(file_path, mode="wb") as file:
             file.write(response.content)
@@ -122,12 +128,25 @@ letters = [
     # ['c', 4413], #2209
     # ['d', 4414], #2944
     # ['e', 4415], #2679
-    # ['f', 4416],
-    ['g', 4417],
+    # ['f', 4416], #776
+    # ['g', 4417], #2118
+    ['h', 4418],
+    # ['i', 4425],
+    # ['j', 4419],
+    # ['k', 4420],
+    # ['l', 4421],
+    # ['m', 4422],
+    # ['n', 4423],
+    # ['o', 4424],
+    # ['p', 4425],
+    # ['q', 4426],
+    # ['r', 4427],
+    # ['s', 4428],
+    # ['t', 4429],
 ]
 
 MAX_FILE_SIZE = 10000000
-MAX_ITERATIONS = 10
+MAX_ITERATIONS = 3
 
 def main(downloads_dir, downloads_thumbs_dir):
     count = 1
@@ -156,8 +175,8 @@ def main(downloads_dir, downloads_thumbs_dir):
                             if full_file_name:
                                 create_download(model_name, xfields, CAT_ID, full_file_name, file_size, thumbnale_file)
                             count += 1
-                            # if count > MAX_ITERATIONS:
-                            #     return
+                            if count > MAX_ITERATIONS:
+                                return
                         else:
                             print(f'=========> Модель {model_name} уже есть в базе. Пропускаем')
             else:
