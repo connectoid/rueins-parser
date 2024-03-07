@@ -83,7 +83,11 @@ def download_file_by_id(downloads_dir, file_id, file_name='checkout.pdf'):
         return False, False
 
 def download_thumbnail(downloads_dir, downloads_thumbs_dir, file_name):
-    file_name_wo_pdf = file_name.replace('.pdf', '')
+    try:
+        file_name_wo_pdf = file_name.replace('.pdf', '')
+    except Exception as e:
+        print(f'Файл {file_name} не PDF')
+        file_name_wo_pdf = file_name
     file_path = f'{downloads_dir}/{file_name}'
     downloads_thumbs_dir_mini = f'{downloads_thumbs_dir}/mini'
     thumbnail_file_name = f'{downloads_thumbs_dir}/{file_name_wo_pdf}.jpg'
