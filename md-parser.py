@@ -1,5 +1,6 @@
 import requests
 import os
+import os.path
 
 from bs4 import BeautifulSoup
 from pdf2image import convert_from_path
@@ -72,14 +73,18 @@ def download_file_by_id(downloads_dir, file_id, file_name='checkout.pdf'):
             ext = 'pdf'
         file_name = f'{file_name}.{ext}'.replace(' ', '-').lower()
         file_path = f'{downloads_dir}/{file_name}'
-        with open(file_path, mode="wb") as file:
-            file.write(response.content)
-        filesize = os.path.getsize(file_path)
-        if filesize > MAX_FILE_SIZE:
-            print(f'~~~~   ~~~~   ~~~~   Размер ({filesize} kb) файла больше максимального ({MAX_FILE_SIZE}), Удаляем!')
-            os.remove(file_path)
-            return False, False
-        return file_name, filesize
+        if not os.path.exists(file_path):
+            with open(file_path, mode="wb") as file:
+                file.write(response.content)
+            filesize = os.path.getsize(file_path)
+            if filesize > MAX_FILE_SIZE:
+                print(f'~~~~   ~~~~   ~~~~   Размер ({filesize} kb) файла больше максимального ({MAX_FILE_SIZE}), Удаляем!')
+                os.remove(file_path)
+                return False, False
+            return file_name, filesize
+        else:
+            filesize = os.path.getsize(file_path)
+            return file_name, filesize
     else:
         print(f'Ошибка сохранения файла {file_name}: {response.status_code}')
         return False, False
@@ -138,18 +143,18 @@ letters = [
     # ['f', 4416], #776
     # ['g', 4417], #2118
     # ['h', 4418], #4065
-    # ['i', 4425], #1258
+    ['i', 4425], #12584
     # ['j', 4419], #1461
     # ['k', 4420], #1325    #28247
     # ['l', 4421], #4517
     # ['m', 4422], #1775
     # ['n', 4423], #689
-    ['o', 4424],
-    ['p', 4425],
-    ['q', 4426],
-    # ['r', 4427],
-    # ['s', 4428],
-    # ['t', 4429],
+    # ['o', 4424], #538
+    ['p', 4426],
+    ['q', 4427],
+    # ['r', 4428],
+    # ['s', 4429],
+    # ['t', 4430],
 ]
 
 MAX_FILE_SIZE = 15000000
